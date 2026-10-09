@@ -1,0 +1,352 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080a10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MU Tracker">
+  <title>MU Tracker</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #080a10;
+      color: #f5f7ff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 24px 18px 40px;
+    }
+    .app { max-width: 650px; margin: auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 28px; }
+    .logo { font-size: 22px; font-weight: 800; letter-spacing: -1px; }
+    .logo span { color: #8b7bff; }
+    .status { color: #a7aabc; font-size: 12px; }
+    h1 { font-size: 30px; letter-spacing: -1px; margin: 0 0 8px; }
+    .subtitle { color: #9298ad; font-size: 14px; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+    .card {
+      background: linear-gradient(145deg, rgba(29,33,49,.92), rgba(16,18,28,.94));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    }
+    .label { color: #a1a6ba; font-size: 12px; margin-bottom: 12px; }
+    .number { font-size: 27px; font-weight: 750; letter-spacing: -1px; }
+    .accent { color: #9a8cff; }
+    .section-title { font-size: 17px; font-weight: 700; margin: 26px 0 14px; }
+    input {
+      width: 100%; background: #141722; color: white;
+      border: 1px solid #303447; border-radius: 13px;
+      padding: 14px; font-size: 15px; outline: none;
+    }
+    input:focus { border-color: #8b7bff; }
+    button {
+      border: 0; border-radius: 13px; padding: 13px 16px;
+      background: #8b7bff; color: #080a10; font-weight: 750;
+      font-size: 14px; cursor: pointer;
+    }
+    .add-row { display: flex; gap: 8px; }
+    .add-row input { min-width: 0; }
+    .server { color: #a3a8bb; font-size: 12px; margin: 10px 0 0; }
+    .character { margin-top: 10px; }
+    .char-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .char-name { font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+    .char-class { color: #9a8cff; font-size: 12px; margin-top: 5px; }
+    .resets { font-size: 21px; font-weight: 750; text-align: right; }
+    .muted { color: #9298ad; font-size: 12px; }
+    .online { color: #63e6a5; }
+    .offline { color: #a1a6ba; }
+    .remove { background: #292433; color: #ff9eac; padding: 8px 10px; margin-top: 12px; }
+    .chart { width: 100%; height: 180px; display: block; overflow: visible; }
+    .empty { text-align: center; color: #9298ad; padding: 25px 8px; font-size: 13px; }
+    .note { font-size: 12px; line-height: 1.6; color: #9298ad; margin-top: 18px; }
+    .bottom { text-align: center; font-size: 11px; color: #646b80; margin-top: 32px; }
+    @media (max-width: 360px) {
+      body { padding: 18px 12px; }
+      .number { font-size: 23px; }
+      .card { padding: 14px; }
+      .add-row { flex-wrap: wrap; }
+      .add-row button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <div class="logo">MU <span>TRACKER</span></div>
+    <div class="status">● Painel pessoal</div>
+  </header>
+
+  <h1>Seu progresso.</h1>
+  <div class="subtitle">Todos os seus personagens em um só lugar.</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Personagens</div>
+      <div class="number" id="totalChars">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Resets acumulados</div>
+      <div class="number accent" id="totalResets">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Resets hoje</div>
+      <div class="number" id="todayResets">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Média diária</div>
+      <div class="number" id="dailyAverage">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Projeção para 30 dias</div>
+    <div class="number accent" id="projection">Aguardando histórico</div>
+    <div class="muted" style="margin-top:8px">Estimativa baseada nos resets observados.</div>
+  </div>
+
+  <div class="section-title">Adicionar personagem</div>
+  <div class="add-row">
+    <input id="characterName" placeholder="Nome do personagem" maxlength="40">
+    <button id="addButton">Adicionar</button>
+  </div>
+  <div class="server">Servidor inicial: MU Insanity</div>
+
+  <div class="section-title">Evolução dos resets</div>
+  <div class="card">
+    <div class="label">Histórico total de resets</div>
+    <canvas id="chart" class="chart"></canvas>
+    <div id="chartMessage" class="muted">Adicione personagens para começar.</div>
+  </div>
+
+  <div class="section-title">Seus personagens</div>
+  <div id="characters"></div>
+
+  <div class="note">
+    As consultas dependem da disponibilidade do servidor. Os dados só serão
+    atualizados quando a integração com o site estiver funcionando. As projeções
+    serão calculadas conforme o histórico real for sendo coletado.
+    O navegador pode limitar atualizações quando o aplicativo estiver fechado.
+  </div>
+  <div class="bottom">MU TRACKER · PAINEL DE MONITORAMENTO</div>
+</main>
+
+<script>
+(() => {
+  const STORAGE_KEY = "mu-tracker-v1";
+  const $ = id => document.getElementById(id);
+  let data = { characters: [], history: [] };
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) data = JSON.parse(saved);
+    if (!Array.isArray(data.characters)) data.characters = [];
+    if (!Array.isArray(data.history)) data.history = [];
+  } catch (e) {
+    data = { characters: [], history: [] };
+  }
+
+  const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const fmt = n => Math.round(n).toLocaleString("pt-BR");
+
+  function render() {
+    $("totalChars").textContent = data.characters.length;
+    $("totalResets").textContent = fmt(
+      data.characters.reduce((sum, c) => sum + (Number(c.resets) || 0), 0)
+    );
+
+    const now = Date.now();
+    const cutoff = now - 30 * 86400000;
+    const history = data.history.filter(h => h.time >= cutoff);
+    const first = history.length ? history[0] : null;
+    const last = history.length ? history[history.length - 1] : null;
+    const gained = first && last ? Math.max(0, last.total - first.total) : 0;
+    const days = first && last ? Math.max(1, (last.time - first.time) / 86400000) : 0;
+    const avg = days ? gained / days : 0;
+
+    $("todayResets").textContent = fmt(
+      data.characters.reduce((sum, c) => sum + (Number(c.todayGained) || 0), 0)
+    );
+    $("dailyAverage").textContent = days ? fmt(avg) : "—";
+    $("projection").textContent = days
+      ? "+" + fmt(avg * 30) + " resets"
+      : "Aguardando histórico";
+
+    const container = $("characters");
+    container.replaceChildren();
+
+    if (!data.characters.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "Nenhum personagem cadastrado ainda.";
+      container.appendChild(empty);
+    }
+
+    data.characters.forEach(c => {
+      const card = document.createElement("div");
+      card.className = "card character";
+
+      const head = document.createElement("div");
+      head.className = "char-head";
+
+      const info = document.createElement("div");
+      const name = document.createElement("div");
+      name.className = "char-name";
+      name.textContent = c.name;
+
+      const cls = document.createElement("div");
+      cls.className = "char-class";
+      cls.textContent = c.className || "Classe não consultada";
+
+      const status = document.createElement("div");
+      status.className = "muted";
+      status.textContent = c.status || "Aguardando integração";
+
+      info.append(name, cls, status);
+
+      const resets = document.createElement("div");
+      resets.innerHTML = '<div class="resets">' + fmt(Number(c.resets) || 0) +
+        '</div><div class="muted">resets</div>';
+
+      head.append(info, resets);
+      card.appendChild(head);
+
+      const map = document.createElement("div");
+      map.className = "muted";
+      map.style.marginTop = "12px";
+      map.textContent = "Mapa: " + (c.map || "—") +
+        (c.updatedAt ? " · Atualizado: " + new Date(c.updatedAt).toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"}) : "");
+      card.appendChild(map);
+
+      const remove = document.createElement("button");
+      remove.className = "remove";
+      remove.textContent = "Remover";
+      remove.addEventListener("click", () => {
+        data.characters = data.characters.filter(x => x.id !== c.id);
+        save();
+        render();
+      });
+      card.appendChild(remove);
+      container.appendChild(card);
+    });
+
+    drawChart();
+  }
+
+  function drawChart() {
+    const canvas = $("chart");
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(280, rect.width);
+    const h = 180;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    const points = data.history.slice(-30);
+    if (points.length < 2) {
+      $("chartMessage").textContent = "O gráfico aparecerá após coletarmos dados em momentos diferentes.";
+      return;
+    }
+
+    $("chartMessage").textContent = points.length + " registros históricos";
+    const values = points.map(p => p.total);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = Math.max(1, max - min);
+    const pad = 12;
+
+    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx.lineWidth = 1;
+    for (let i = 1; i <= 3; i++) {
+      const y = pad + (h - pad * 2) * i / 4;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    ctx.beginPath();
+    points.forEach((p, i) => {
+      const x = pad + (w - pad * 2) * i / (points.length - 1);
+      const y = h - pad - ((p.total - min) / range) * (h - pad * 2);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "#9a8cff";
+    ctx.lineWidth = 3;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+  }
+
+  function snapshot() {
+    const total = data.characters.reduce((sum, c) => sum + (Number(c.resets) || 0), 0);
+    const last = data.history[data.history.length - 1];
+    if (last && last.total === total &&
+        new Date(last.time).toDateString() === new Date().toDateString()) return;
+
+    data.history.push({ time: Date.now(), total });
+    if (data.history.length > 5000) data.history = data.history.slice(-5000);
+    save();
+  }
+
+  function addCharacter() {
+    const input = $("characterName");
+    const name = input.value.trim();
+    if (!name) {
+      input.focus();
+      return;
+    }
+    if (data.characters.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+      alert("Esse personagem já está cadastrado.");
+      return;
+    }
+
+    data.characters.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      name,
+      server: "MU Insanity",
+      resets: 0,
+      className: "",
+      status: "",
+      map: "",
+      updatedAt: null
+    });
+
+    input.value = "";
+    save();
+    snapshot();
+    render();
+  }
+
+  $("addButton").addEventListener("click", addCharacter);
+  $("characterName").addEventListener("keydown", e => {
+    if (e.key === "Enter") addCharacter();
+  });
+
+  render();
+  if (!data.history.length) {
+    snapshot();
+    render();
+  }
+
+  // Esta versão é apenas a base visual. A integração real com o servidor
+  // precisa ser implementada antes de obter resets, classes, mapas e status.
+  setInterval(() => {
+    if (document.visibilityState === "visible") {
+      snapshot();
+      render();
+    }
+  }, 5 * 60 * 1000);
+
+  window.addEventListener("resize", drawChart);
+})();
+</script>
+</body>
+</html>
+```
