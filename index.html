@@ -1,352 +1,561 @@
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080a10">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="MU Tracker">
-  <title>MU Tracker</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #080a10;
-      color: #f5f7ff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 24px 18px 40px;
-    }
-    .app { max-width: 650px; margin: auto; }
-    header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 28px; }
-    .logo { font-size: 22px; font-weight: 800; letter-spacing: -1px; }
-    .logo span { color: #8b7bff; }
-    .status { color: #a7aabc; font-size: 12px; }
-    h1 { font-size: 30px; letter-spacing: -1px; margin: 0 0 8px; }
-    .subtitle { color: #9298ad; font-size: 14px; margin-bottom: 24px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
-    .card {
-      background: linear-gradient(145deg, rgba(29,33,49,.92), rgba(16,18,28,.94));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.12);
-    }
-    .label { color: #a1a6ba; font-size: 12px; margin-bottom: 12px; }
-    .number { font-size: 27px; font-weight: 750; letter-spacing: -1px; }
-    .accent { color: #9a8cff; }
-    .section-title { font-size: 17px; font-weight: 700; margin: 26px 0 14px; }
-    input {
-      width: 100%; background: #141722; color: white;
-      border: 1px solid #303447; border-radius: 13px;
-      padding: 14px; font-size: 15px; outline: none;
-    }
-    input:focus { border-color: #8b7bff; }
-    button {
-      border: 0; border-radius: 13px; padding: 13px 16px;
-      background: #8b7bff; color: #080a10; font-weight: 750;
-      font-size: 14px; cursor: pointer;
-    }
-    .add-row { display: flex; gap: 8px; }
-    .add-row input { min-width: 0; }
-    .server { color: #a3a8bb; font-size: 12px; margin: 10px 0 0; }
-    .character { margin-top: 10px; }
-    .char-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .char-name { font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
-    .char-class { color: #9a8cff; font-size: 12px; margin-top: 5px; }
-    .resets { font-size: 21px; font-weight: 750; text-align: right; }
-    .muted { color: #9298ad; font-size: 12px; }
-    .online { color: #63e6a5; }
-    .offline { color: #a1a6ba; }
-    .remove { background: #292433; color: #ff9eac; padding: 8px 10px; margin-top: 12px; }
-    .chart { width: 100%; height: 180px; display: block; overflow: visible; }
-    .empty { text-align: center; color: #9298ad; padding: 25px 8px; font-size: 13px; }
-    .note { font-size: 12px; line-height: 1.6; color: #9298ad; margin-top: 18px; }
-    .bottom { text-align: center; font-size: 11px; color: #646b80; margin-top: 32px; }
-    @media (max-width: 360px) {
-      body { padding: 18px 12px; }
-      .number { font-size: 23px; }
-      .card { padding: 14px; }
-      .add-row { flex-wrap: wrap; }
-      .add-row button { width: 100%; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b12">
+<title>MU Tracker</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg:#090b12;
+  --panel:rgba(20,24,38,.82);
+  --line:rgba(255,255,255,.08);
+  --text:#f4f6ff;
+  --muted:#8991aa;
+  --cyan:#65e5ff;
+  --purple:#a78bfa;
+  --green:#67e8a5;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:
+  radial-gradient(ellipse at 15% 0%,#17213c 0,transparent 42%),
+  radial-gradient(ellipse at 100% 30%,#211537 0,transparent 35%),var(--bg);
+  color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:1250px;margin:auto;padding:28px 24px 50px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:34px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border:1px solid #65e5ff55;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#65e5ff20,#a78bfa20);color:var(--cyan);font-weight:900;font-size:20px;box-shadow:0 0 28px #65e5ff12}
+h1{font-size:21px;letter-spacing:-.8px;margin:0}
+.subtitle{color:var(--muted);font-size:12px}
+.header-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#ffffff08;color:var(--text);border-radius:11px;padding:10px 14px;transition:.2s}
+.btn:hover{border-color:#65e5ff66;background:#65e5ff0c}
+.btn.primary{background:linear-gradient(120deg,#65e5ff,#9b8cff);color:#080b13;border:0;font-weight:750}
+.eyebrow{color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:2px;font-weight:800}
+h2{font-size:26px;letter-spacing:-1px;margin:5px 0 4px}
+.muted{color:var(--muted)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:0 0 20px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:26px 0}
+.panel,.stat,.character{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:18px;box-shadow:0 14px 45px #00000016}
+.stat{padding:19px;min-width:0}
+.stat-label{color:var(--muted);font-size:12px}
+.stat-value{font-size:27px;font-weight:750;letter-spacing:-1px;margin:9px 0 2px;overflow-wrap:anywhere}
+.stat-foot{font-size:11px;color:var(--muted)}
+.accent{color:var(--cyan)}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.8fr);gap:16px;margin-bottom:25px}
+.panel{padding:22px;min-width:0}
+.panel h3{font-size:15px;margin:0 0 4px}
+.panel-desc{font-size:12px;color:var(--muted);margin-bottom:20px}
+.chart{width:100%;height:220px;display:block;overflow:visible}
+.legend{display:flex;gap:15px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:8px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-right:6px}
+.empty{border:1px dashed #ffffff20;border-radius:14px;padding:28px 16px;text-align:center;color:var(--muted)}
+.character-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.character{padding:19px;min-width:0;transition:transform .2s,border-color .2s}
+.character:hover{transform:translateY(-2px);border-color:#65e5ff40}
+.char-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#65e5ff22,#a78bfa30);border:1px solid #ffffff12;display:grid;place-items:center;color:var(--cyan);font-weight:800;font-size:18px;flex-shrink:0}
+.char-name{font-size:16px;font-weight:750;overflow-wrap:anywhere}
+.server{font-size:11px;color:var(--muted)}
+.pill{font-size:10px;padding:5px 8px;border-radius:20px;background:#ffffff09;color:var(--muted);white-space:nowrap}
+.char-resets{font-size:28px;font-weight:800;letter-spacing:-1px;margin:20px 0 0}
+.char-resets small{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0}
+.char-details{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.detail-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.detail-value{font-size:12px;font-weight:650;margin-top:4px;overflow-wrap:anywhere}
+.char-actions{display:flex;gap:8px;flex-wrap:wrap}
+.char-actions .btn{font-size:11px;padding:8px 10px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11px;color:var(--muted)}
+.field input,.field select{width:100%;min-width:0;background:#0b0e18;border:1px solid #ffffff16;color:var(--text);padding:12px;border-radius:10px;outline:none}
+.field input:focus,.field select:focus{border-color:#65e5ff99}
+.form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.hidden{display:none!important}
+.notice{margin-top:18px;padding:13px 15px;border-radius:12px;background:#65e5ff09;border:1px solid #65e5ff20;color:#aab8d1;font-size:11px}
+footer{color:#606981;font-size:11px;text-align:center;margin-top:35px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+@media(max-width:800px){
+ .app{padding:20px 15px 35px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .layout{grid-template-columns:1fr}.character-list{grid-template-columns:1fr}
+ header{align-items:flex-start}.header-actions{justify-content:flex-end}
+ h2{font-size:23px}
+}
+@media(max-width:430px){
+ .brand{gap:8px}.logo{width:38px;height:38px}
+ h1{font-size:18px}.subtitle{font-size:10px}
+ .header-actions .btn{padding:9px;font-size:11px}
+ .stat{padding:15px}.stat-value{font-size:23px}
+ .panel{padding:16px}.form-grid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+}
+</style>
 </head>
 <body>
-<main class="app">
+<div class="app">
   <header>
-    <div class="logo">MU <span>TRACKER</span></div>
-    <div class="status">● Painel pessoal</div>
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>MU TRACKER<span class="accent">.</span></h1>
+        <div class="subtitle">Seu progresso. Seus personagens.</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn" id="refreshBtn">↻ Atualizar</button>
+      <button class="btn primary" id="topAddBtn">+ Personagem</button>
+    </div>
   </header>
 
-  <h1>Seu progresso.</h1>
-  <div class="subtitle">Todos os seus personagens em um só lugar.</div>
+  <section>
+    <div class="eyebrow">Painel de controle</div>
+    <h2>Seu universo MU.</h2>
+    <div class="muted">Acompanhe seus personagens em um só lugar.</div>
+  </section>
 
-  <div class="grid">
-    <div class="card">
-      <div class="label">Personagens</div>
-      <div class="number" id="totalChars">0</div>
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label">Personagens</div>
+      <div class="stat-value" id="totalChars">0</div>
+      <div class="stat-foot">Cadastrados neste dispositivo</div>
     </div>
-    <div class="card">
-      <div class="label">Resets acumulados</div>
-      <div class="number accent" id="totalResets">0</div>
+    <div class="stat">
+      <div class="stat-label">Total de resets</div>
+      <div class="stat-value accent" id="totalResets">0</div>
+      <div class="stat-foot">Soma dos valores cadastrados</div>
     </div>
-    <div class="card">
-      <div class="label">Resets hoje</div>
-      <div class="number" id="todayResets">0</div>
+    <div class="stat">
+      <div class="stat-label">Média por personagem</div>
+      <div class="stat-value" id="avgResets">0</div>
+      <div class="stat-foot">Resets por personagem</div>
     </div>
-    <div class="card">
-      <div class="label">Média diária</div>
-      <div class="number" id="dailyAverage">—</div>
+    <div class="stat">
+      <div class="stat-label">Última verificação</div>
+      <div class="stat-value" style="font-size:19px" id="lastUpdated">--:--</div>
+      <div class="stat-foot" id="updateStatus">Dados locais</div>
     </div>
+  </section>
+
+  <section class="layout">
+    <div class="panel">
+      <h3>Evolução dos resets</h3>
+      <div class="panel-desc">Histórico registrado pelo MU Tracker</div>
+      <svg class="chart" id="historyChart" viewBox="0 0 600 220" role="img" aria-label="Gráfico do histórico de resets"></svg>
+      <div class="legend"><span><i class="dot"></i>Resets totais registrados</span></div>
+    </div>
+    <div class="panel">
+      <h3>Projeção de progresso</h3>
+      <div class="panel-desc">Estimativa baseada no seu histórico real</div>
+      <div class="stat-value accent" id="projection7">—</div>
+      <div class="muted" style="font-size:12px">Resets estimados em 7 dias</div>
+      <div style="height:18px"></div>
+      <div class="stat-value" id="projection30">—</div>
+      <div class="muted" style="font-size:12px">Resets estimados em 30 dias</div>
+      <div class="notice" id="projectionNote">Registre mudanças de resets em dias diferentes para liberar as projeções.</div>
+    </div>
+  </section>
+
+  <section id="formSection" class="panel hidden" style="margin-bottom:25px">
+    <div class="section-head">
+      <div>
+        <h3 id="formTitle">Adicionar personagem</h3>
+        <div class="panel-desc" style="margin:4px 0 0">Preencha os dados conhecidos do personagem.</div>
+      </div>
+      <button class="btn" id="closeFormBtn" aria-label="Fechar formulário">✕</button>
+    </div>
+    <form id="characterForm">
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <div class="field">
+          <label for="server">Servidor</label>
+          <select id="server">
+            <option value="MU Insanity">MU Insanity</option>
+            <option value="MU Insanity (outro)">Outro servidor</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Nome do personagem</label>
+          <input id="name" required maxlength="40" placeholder="Ex.: Eros">
+        </div>
+        <div class="field">
+          <label for="resets">Resets atuais</label>
+          <input id="resets" type="number" min="0" step="1" required placeholder="Ex.: 1200">
+        </div>
+        <div class="field">
+          <label for="className">Classe</label>
+          <input id="className" maxlength="50" placeholder="Ex.: Blade Knight">
+        </div>
+        <div class="field">
+          <label for="mapName">Mapa</label>
+          <input id="mapName" maxlength="60" placeholder="Ex.: Lorencia">
+        </div>
+        <div class="field">
+          <label for="coordinates">Coordenadas</label>
+          <input id="coordinates" maxlength="30" placeholder="Ex.: 125, 130">
+        </div>
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="Desconhecido">Não verificado</option>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Salvar personagem</button>
+        <button type="button" class="btn" id="cancelBtn">Cancelar</button>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Sua coleção</div>
+        <h2 style="font-size:22px">Personagens</h2>
+      </div>
+      <span class="pill" id="charCount">0 cadastrados</span>
+    </div>
+    <div id="characterList" class="character-list"></div>
+    <div id="emptyState" class="empty">
+      <div style="font-size:28px;margin-bottom:8px">✦</div>
+      <div style="color:var(--text);font-weight:700;margin-bottom:5px">Seu tracker começa aqui.</div>
+      <div>Adicione seu primeiro personagem para começar.</div>
+      <button class="btn primary" id="emptyAddBtn" style="margin-top:16px">+ Adicionar personagem</button>
+    </div>
+  </section>
+
+  <div class="notice">
+    <strong>Importante:</strong> os dados são armazenados neste navegador. O cadastro não consulta o servidor automaticamente. Use Editar para registrar os valores atuais; o histórico é criado quando os resets mudam. A sincronização entre dispositivos e a leitura automática do site exigem uma integração adicional.
   </div>
 
-  <div class="card">
-    <div class="label">Projeção para 30 dias</div>
-    <div class="number accent" id="projection">Aguardando histórico</div>
-    <div class="muted" style="margin-top:8px">Estimativa baseada nos resets observados.</div>
-  </div>
-
-  <div class="section-title">Adicionar personagem</div>
-  <div class="add-row">
-    <input id="characterName" placeholder="Nome do personagem" maxlength="40">
-    <button id="addButton">Adicionar</button>
-  </div>
-  <div class="server">Servidor inicial: MU Insanity</div>
-
-  <div class="section-title">Evolução dos resets</div>
-  <div class="card">
-    <div class="label">Histórico total de resets</div>
-    <canvas id="chart" class="chart"></canvas>
-    <div id="chartMessage" class="muted">Adicione personagens para começar.</div>
-  </div>
-
-  <div class="section-title">Seus personagens</div>
-  <div id="characters"></div>
-
-  <div class="note">
-    As consultas dependem da disponibilidade do servidor. Os dados só serão
-    atualizados quando a integração com o site estiver funcionando. As projeções
-    serão calculadas conforme o histórico real for sendo coletado.
-    O navegador pode limitar atualizações quando o aplicativo estiver fechado.
-  </div>
-  <div class="bottom">MU TRACKER · PAINEL DE MONITORAMENTO</div>
-</main>
+  <footer>MU TRACKER · COMMUNITY PROJECT · DADOS LOCAIS</footer>
+</div>
 
 <script>
 (() => {
-  const STORAGE_KEY = "mu-tracker-v1";
+  "use strict";
+
+  const STORAGE_KEY = "muTrackerData_v1";
   const $ = id => document.getElementById(id);
-  let data = { characters: [], history: [] };
+
+  let characters = [];
+  let lastCheck = null;
 
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) data = JSON.parse(saved);
-    if (!Array.isArray(data.characters)) data.characters = [];
-    if (!Array.isArray(data.history)) data.history = [];
-  } catch (e) {
-    data = { characters: [], history: [] };
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    characters = Array.isArray(saved.characters) ? saved.characters : [];
+    lastCheck = saved.lastCheck || null;
+  } catch (error) {
+    characters = [];
   }
 
-  const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  const fmt = n => Math.round(n).toLocaleString("pt-BR");
-
-  function render() {
-    $("totalChars").textContent = data.characters.length;
-    $("totalResets").textContent = fmt(
-      data.characters.reduce((sum, c) => sum + (Number(c.resets) || 0), 0)
-    );
-
-    const now = Date.now();
-    const cutoff = now - 30 * 86400000;
-    const history = data.history.filter(h => h.time >= cutoff);
-    const first = history.length ? history[0] : null;
-    const last = history.length ? history[history.length - 1] : null;
-    const gained = first && last ? Math.max(0, last.total - first.total) : 0;
-    const days = first && last ? Math.max(1, (last.time - first.time) / 86400000) : 0;
-    const avg = days ? gained / days : 0;
-
-    $("todayResets").textContent = fmt(
-      data.characters.reduce((sum, c) => sum + (Number(c.todayGained) || 0), 0)
-    );
-    $("dailyAverage").textContent = days ? fmt(avg) : "—";
-    $("projection").textContent = days
-      ? "+" + fmt(avg * 30) + " resets"
-      : "Aguardando histórico";
-
-    const container = $("characters");
-    container.replaceChildren();
-
-    if (!data.characters.length) {
-      const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = "Nenhum personagem cadastrado ainda.";
-      container.appendChild(empty);
+  function persist() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        characters,
+        lastCheck
+      }));
+    } catch (error) {
+      alert("Não foi possível salvar os dados. Verifique o espaço disponível no navegador.");
     }
-
-    data.characters.forEach(c => {
-      const card = document.createElement("div");
-      card.className = "card character";
-
-      const head = document.createElement("div");
-      head.className = "char-head";
-
-      const info = document.createElement("div");
-      const name = document.createElement("div");
-      name.className = "char-name";
-      name.textContent = c.name;
-
-      const cls = document.createElement("div");
-      cls.className = "char-class";
-      cls.textContent = c.className || "Classe não consultada";
-
-      const status = document.createElement("div");
-      status.className = "muted";
-      status.textContent = c.status || "Aguardando integração";
-
-      info.append(name, cls, status);
-
-      const resets = document.createElement("div");
-      resets.innerHTML = '<div class="resets">' + fmt(Number(c.resets) || 0) +
-        '</div><div class="muted">resets</div>';
-
-      head.append(info, resets);
-      card.appendChild(head);
-
-      const map = document.createElement("div");
-      map.className = "muted";
-      map.style.marginTop = "12px";
-      map.textContent = "Mapa: " + (c.map || "—") +
-        (c.updatedAt ? " · Atualizado: " + new Date(c.updatedAt).toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"}) : "");
-      card.appendChild(map);
-
-      const remove = document.createElement("button");
-      remove.className = "remove";
-      remove.textContent = "Remover";
-      remove.addEventListener("click", () => {
-        data.characters = data.characters.filter(x => x.id !== c.id);
-        save();
-        render();
-      });
-      card.appendChild(remove);
-      container.appendChild(card);
-    });
-
-    drawChart();
   }
 
-  function drawChart() {
-    const canvas = $("chart");
-    const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const w = Math.max(280, rect.width);
-    const h = 180;
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, w, h);
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;",
+      '"':"&quot;", "'":"&#39;"
+    })[ch]);
+  }
 
-    const points = data.history.slice(-30);
-    if (points.length < 2) {
-      $("chartMessage").textContent = "O gráfico aparecerá após coletarmos dados em momentos diferentes.";
+  function number(value) {
+    return (Number(value) || 0).toLocaleString("pt-BR");
+  }
+
+  function timeLabel(value) {
+    if (!value) return "--:--";
+    return new Date(value).toLocaleTimeString("pt-BR", {
+      hour:"2-digit", minute:"2-digit"
+    });
+  }
+
+  function saveSnapshot(character, oldResets) {
+    if (!Array.isArray(character.history)) character.history = [];
+    const now = new Date().toISOString();
+    const resets = Number(character.resets) || 0;
+    const last = character.history[character.history.length - 1];
+
+    if (!last) {
+      character.history.push({ date: now, resets });
       return;
     }
 
-    $("chartMessage").textContent = points.length + " registros históricos";
-    const values = points.map(p => p.total);
+    if (resets !== Number(last.resets)) {
+      character.history.push({ date: now, resets });
+    }
+  }
+
+  function openForm(character) {
+    $("formSection").classList.remove("hidden");
+    $("formTitle").textContent = character ? "Editar personagem" : "Adicionar personagem";
+    $("editId").value = character?.id || "";
+    $("server").value = character?.server || "MU Insanity";
+    $("name").value = character?.name || "";
+    $("resets").value = character?.resets ?? "";
+    $("className").value = character?.className || "";
+    $("mapName").value = character?.mapName || "";
+    $("coordinates").value = character?.coordinates || "";
+    $("status").value = character?.status || "Desconhecido";
+    $("formSection").scrollIntoView({ behavior:"smooth", block:"start" });
+    setTimeout(() => $("name").focus({ preventScroll:true }), 250);
+  }
+
+  function closeForm() {
+    $("characterForm").reset();
+    $("editId").value = "";
+    $("formSection").classList.add("hidden");
+  }
+
+  function profileUrl(character) {
+    return "https://muinsanity.com/profile/character/" +
+      encodeURIComponent(character.name);
+  }
+
+  function getTotal() {
+    return characters.reduce((sum, c) => sum + (Number(c.resets) || 0), 0);
+  }
+
+  function renderStats() {
+    const total = getTotal();
+    $("totalChars").textContent = number(characters.length);
+    $("totalResets").textContent = number(total);
+    $("avgResets").textContent = number(characters.length ? Math.round(total / characters.length) : 0);
+    $("lastUpdated").textContent = timeLabel(lastCheck);
+    $("updateStatus").textContent = lastCheck
+      ? "Última verificação local"
+      : "Aguardando primeiro registro";
+    $("charCount").textContent = characters.length + (characters.length === 1 ? " cadastrado" : " cadastrados");
+  }
+
+  function renderCharacters() {
+    const list = $("characterList");
+    $("emptyState").classList.toggle("hidden", characters.length > 0);
+
+    if (!characters.length) {
+      list.innerHTML = "";
+      return;
+    }
+
+    list.innerHTML = characters.map(c => {
+      const statusClass = c.status === "Online" ? "accent" :
+        c.status === "Offline" ? "" : "muted";
+      const statusText = c.status || "Desconhecido";
+
+      return `
+        <article class="character">
+          <div class="char-top">
+            <div style="display:flex;align-items:center;gap:11px;min-width:0">
+              <div class="avatar">${escapeHTML((c.name || "?").charAt(0).toUpperCase())}</div>
+              <div style="min-width:0">
+                <div class="char-name">${escapeHTML(c.name)}</div>
+                <div class="server">${escapeHTML(c.server)}</div>
+              </div>
+            </div>
+            <span class="pill ${statusClass}">${escapeHTML(statusText)}</span>
+          </div>
+          <div class="char-resets">${number(c.resets)} <small>RESETS</small></div>
+          <div class="char-details">
+            <div><div class="detail-label">Classe</div><div class="detail-value">${escapeHTML(c.className || "Não informada")}</div></div>
+            <div><div class="detail-label">Mapa</div><div class="detail-value">${escapeHTML(c.mapName || "Não informado")}</div></div>
+            <div><div class="detail-label">Coordenadas</div><div class="detail-value">${escapeHTML(c.coordinates || "—")}</div></div>
+            <div><div class="detail-label">Último registro</div><div class="detail-value">${c.history?.length ? escapeHTML(new Date(c.history[c.history.length-1].date).toLocaleDateString("pt-BR")) : "—"}</div></div>
+          </div>
+          <div class="char-actions">
+            <button class="btn" data-action="edit" data-id="${escapeHTML(c.id)}">Editar dados</button>
+            <button class="btn" data-action="profile" data-id="${escapeHTML(c.id)}">Ver perfil ↗</button>
+            <button class="btn" data-action="delete" data-id="${escapeHTML(c.id)}">Remover</button>
+          </div>
+        </article>`;
+    }).join("");
+  }
+
+  function renderChart() {
+    const svg = $("historyChart");
+    const historyMap = new Map();
+
+    characters.forEach(c => {
+      (c.history || []).forEach(point => {
+        const day = new Date(point.date).toISOString().slice(0, 10);
+        historyMap.set(day, (historyMap.get(day) || 0) + Number(point.resets || 0));
+      });
+    });
+
+    const data = [...historyMap.entries()]
+      .sort((a,b) => a[0].localeCompare(b[0]))
+      .slice(-14);
+
+    if (data.length < 2) {
+      svg.innerHTML = `
+        <line x1="35" y1="175" x2="580" y2="175" stroke="#ffffff16"/>
+        <line x1="35" y1="115" x2="580" y2="115" stroke="#ffffff10" stroke-dasharray="4 5"/>
+        <line x1="35" y1="55" x2="580" y2="55" stroke="#ffffff10" stroke-dasharray="4 5"/>
+        <text x="300" y="98" fill="#8991aa" text-anchor="middle" font-size="13">
+          ${data.length === 1 ? "Registre outra mudança de resets" : "Seu histórico aparecerá aqui"}
+        </text>
+        <text x="300" y="119" fill="#606981" text-anchor="middle" font-size="11">
+          São necessários registros em momentos diferentes
+        </text>`;
+      return;
+    }
+
+    const values = data.map(d => d[1]);
     const min = Math.min(...values);
     const max = Math.max(...values);
-    const range = Math.max(1, max - min);
-    const pad = 12;
+    const spread = max - min || 1;
+    const points = values.map((v,i) => ({
+      x: 38 + i * (535 / (values.length - 1)),
+      y: 170 - ((v - min) / spread) * 120
+    }));
+    const line = points.map(p => `${p.x},${p.y}`).join(" ");
+    const area = `38,180 ${line} 573,180`;
 
-    ctx.strokeStyle = "rgba(255,255,255,0.08)";
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 3; i++) {
-      const y = pad + (h - pad * 2) * i / 4;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#65e5ff" stop-opacity=".25"/>
+          <stop offset="100%" stop-color="#65e5ff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="35" y1="50" x2="580" y2="50" stroke="#ffffff10" stroke-dasharray="4 5"/>
+      <line x1="35" y1="110" x2="580" y2="110" stroke="#ffffff10" stroke-dasharray="4 5"/>
+      <line x1="35" y1="180" x2="580" y2="180" stroke="#ffffff16"/>
+      <polygon points="${area}" fill="url(#areaGradient)"/>
+      <polyline points="${line}" fill="none" stroke="#65e5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      ${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#090b12" stroke="#65e5ff" stroke-width="2"/>`).join("")}
+      <text x="38" y="205" fill="#8991aa" font-size="10">${escapeHTML(data[0][0].slice(5).split("-").reverse().join("/"))}</text>
+      <text x="573" y="205" fill="#8991aa" font-size="10" text-anchor="end">${escapeHTML(data[data.length-1][0].slice(5).split("-").reverse().join("/"))}</text>
+      <text x="38" y="32" fill="#8991aa" font-size="10">${number(max)} resets</text>`;
+  }
 
-    ctx.beginPath();
-    points.forEach((p, i) => {
-      const x = pad + (w - pad * 2) * i / (points.length - 1);
-      const y = h - pad - ((p.total - min) / range) * (h - pad * 2);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
+  function renderProjection() {
+    const dailyChanges = [];
+
+    characters.forEach(c => {
+      const h = [...(c.history || [])].sort((a,b) => new Date(a.date) - new Date(b.date));
+      for (let i = 1; i < h.length; i++) {
+        const days = (new Date(h[i].date) - new Date(h[i-1].date)) / 86400000;
+        const gain = Number(h[i].resets) - Number(h[i-1].resets);
+        if (days > 0 && gain >= 0) dailyChanges.push(gain / days);
+      }
     });
-    ctx.strokeStyle = "#9a8cff";
-    ctx.lineWidth = 3;
-    ctx.lineJoin = "round";
-    ctx.stroke();
-  }
 
-  function snapshot() {
-    const total = data.characters.reduce((sum, c) => sum + (Number(c.resets) || 0), 0);
-    const last = data.history[data.history.length - 1];
-    if (last && last.total === total &&
-        new Date(last.time).toDateString() === new Date().toDateString()) return;
-
-    data.history.push({ time: Date.now(), total });
-    if (data.history.length > 5000) data.history = data.history.slice(-5000);
-    save();
-  }
-
-  function addCharacter() {
-    const input = $("characterName");
-    const name = input.value.trim();
-    if (!name) {
-      input.focus();
-      return;
-    }
-    if (data.characters.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-      alert("Esse personagem já está cadastrado.");
+    if (!dailyChanges.length) {
+      $("projection7").textContent = "—";
+      $("projection30").textContent = "—";
+      $("projectionNote").textContent = "Ainda não há mudanças de resets em dias diferentes para calcular uma projeção.";
       return;
     }
 
-    data.characters.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    const rate = dailyChanges.reduce((a,b) => a+b, 0) / dailyChanges.length;
+    $("projection7").textContent = "+" + number(Math.round(rate * 7));
+    $("projection30").textContent = "+" + number(Math.round(rate * 30));
+    $("projectionNote").textContent = "Estimativa de ganhos baseada na média observada. Não é uma garantia de resultado.";
+  }
+
+  function render() {
+    renderStats();
+    renderCharacters();
+    renderChart();
+    renderProjection();
+  }
+
+  $("characterForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const id = $("editId").value;
+    const name = $("name").value.trim();
+    const resets = Number($("resets").value);
+
+    if (!name || !Number.isFinite(resets) || resets < 0) {
+      alert("Confira o nome e a quantidade de resets.");
+      return;
+    }
+
+    const existing = characters.find(c => c.id === id);
+    const character = {
+      id: id || (Date.now().toString(36) + Math.random().toString(36).slice(2,8)),
+      server: $("server").value,
       name,
-      server: "MU Insanity",
-      resets: 0,
-      className: "",
-      status: "",
-      map: "",
-      updatedAt: null
-    });
+      resets,
+      className: $("className").value.trim(),
+      mapName: $("mapName").value.trim(),
+      coordinates: $("coordinates").value.trim(),
+      status: $("status").value,
+      history: existing?.history || []
+    };
 
-    input.value = "";
-    save();
-    snapshot();
+    saveSnapshot(character, existing?.resets);
+    if (existing) {
+      characters = characters.map(c => c.id === id ? character : c);
+    } else {
+      characters.push(character);
+    }
+
+    lastCheck = new Date().toISOString();
+    persist();
+    closeForm();
     render();
-  }
-
-  $("addButton").addEventListener("click", addCharacter);
-  $("characterName").addEventListener("keydown", e => {
-    if (e.key === "Enter") addCharacter();
   });
 
-  render();
-  if (!data.history.length) {
-    snapshot();
-    render();
+  $("characterList").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const c = characters.find(item => item.id === button.dataset.id);
+    if (!c) return;
+
+    if (button.dataset.action === "edit") {
+      openForm(c);
+    } else if (button.dataset.action === "profile") {
+      window.open(profileUrl(c), "_blank", "noopener,noreferrer");
+    } else if (button.dataset.action === "delete") {
+      if (confirm(`Remover ${c.name} e seu histórico deste dispositivo?`)) {
+        characters = characters.filter(item => item.id !== c.id);
+        persist();
+        render();
+      }
+    }
+  });
+
+  function markChecked() {
+    lastCheck = new Date().toISOString();
+    persist();
+    renderStats();
+    $("updateStatus").textContent = "Verificação local; site não consultado";
   }
 
-  // Esta versão é apenas a base visual. A integração real com o servidor
-  // precisa ser implementada antes de obter resets, classes, mapas e status.
-  setInterval(() => {
-    if (document.visibilityState === "visible") {
-      snapshot();
-      render();
-    }
-  }, 5 * 60 * 1000);
+  $("topAddBtn").addEventListener("click", () => openForm(null));
+  $("emptyAddBtn").addEventListener("click", () => openForm(null));
+  $("closeFormBtn").addEventListener("click", closeForm);
+  $("cancelBtn").addEventListener("click", closeForm);
+  $("refreshBtn").addEventListener("click", markChecked);
 
-  window.addEventListener("resize", drawChart);
+  render();
+
+  // Atualiza a interface periodicamente. Isso não consulta o servidor.
+  setInterval(() => {
+    renderStats();
+  }, 5 * 60 * 1000);
 })();
 </script>
 </body>
 </html>
-```
